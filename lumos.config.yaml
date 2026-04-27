@@ -1,0 +1,17 @@
+# lumos.config.yaml
+# -----------------
+# proxy: core proxy settings
+#   audit_queue_size: max events buffered before oldest is dropped (default 1000)
+#   policy_dir: directory containing policy YAML files (default: policies/)
+#
+# routes: tool name pattern -> upstream MCP server URL
+#   patterns support exact match and prefix wildcard (e.g. "tool.db.*")
+#   first matching rule wins
+#   "*" matches all tools (use as last fallback)
+proxy:
+  audit_queue_size: 1000
+
+routes:
+  tool.echo: http://127.0.0.1:8000/mcp
+  tool.db.*: http://127.0.0.1:8001/mcp
+  "*": http://127.0.0.1:8000/mcp

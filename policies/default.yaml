@@ -1,0 +1,45 @@
+# Lumos default policy
+# --------------------
+# rules: evaluated top-to-bottom, first match wins
+#   name: human-readable rule name (required)
+#   tool: tool name pattern, supports wildcards (required)
+#   action: allow | deny (required)
+#   reason: message returned to agent on deny (optional)
+#   when: optional argument conditions (see docs)
+#
+# rate_limits: per-agent, per-tool call rate limiting
+#   window_seconds: rolling window size
+#   max_calls: maximum calls allowed in window
+#
+# budgets: per-agent spend tracking
+#   period: daily | monthly
+#   limit: maximum units per period
+
+rules:
+  # Block tools that delete or destroy data
+  - name: block-destructive-tools
+    tool: "*.delete*"
+    action: deny
+    reason: "Destructive operations are blocked by default policy"
+
+  - name: block-drop-tools
+    tool: "*.drop*"
+    action: deny
+    reason: "Drop operations are blocked by default policy"
+
+  # Allow everything else
+  - name: allow-all
+    tool: "*"
+    action: allow
+
+# Default rate limit: 100 calls per minute per agent across all tools
+rate_limits:
+  "*":
+    window_seconds: 60
+    max_calls: 100
+
+# Default budget: 10000 units per day per agent
+budgets:
+  "*":
+    period: daily
+    limit: 10000

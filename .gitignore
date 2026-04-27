@@ -1,0 +1,41 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Lumos runtime
+.lumos/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Docker
+docker/postgres_data/
+
+# Docs source (keep compiled docs if any)
+*.docx
