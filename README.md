@@ -271,4 +271,4 @@ For security issues, open a private GitHub issue.
 MIT
 
 ---
-*Built with 🔦 by [keeertu](https://github.com/keeertu) and contributors.*
+Built with 🔦 by [keeertu](https://github.com/keeertu) and [Ayaan1911](https://github.com/Ayaan1911).
