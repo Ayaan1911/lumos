@@ -58,7 +58,7 @@ function RegisterModal({ open, onClose, onSuccess }) {
   return (
     <Modal open={open} onClose={onClose} title="Register Agent">
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div style={{ padding: '10px 12px', background: '#0a0a0a', border: '1px solid #1f1f1f', borderRadius: '6px', fontSize: '12px', color: '#666' }}>
+        <div style={{ padding: '12px 13px', background: '#090911', border: '1px solid rgba(6,182,212,0.22)', borderRadius: '10px', fontSize: '12px', color: '#9ca3c7', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)' }}>
           Agents must authenticate with Ed25519 keys. Register here first, then add keys via API.
         </div>
         <Input label="Agent ID" value={fields.agent_id} onChange={set('agent_id')} placeholder="my-agent" error={errors.agent_id} />
@@ -121,8 +121,8 @@ function AgentExpanded({ agentId }) {
   }, [agentId]);
 
   return (
-    <div style={{ padding: '12px 16px 16px', borderTop: '1px solid #161616', background: '#0b0b0b' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', color: '#555', fontSize: '11px', fontWeight: '600', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+    <div style={{ padding: '14px 16px 18px', borderTop: '1px solid rgba(124,58,237,0.20)', background: 'linear-gradient(180deg, rgba(10,10,18,0.96), rgba(7,7,12,0.96))' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '12px', color: '#06b6d4', fontSize: '11px', fontWeight: '800', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
         <Key size={11} /> Keys
       </div>
       {loading ? (
@@ -132,19 +132,19 @@ function AgentExpanded({ agentId }) {
           {data.keys.map((k) => (
             <div key={k.kid} style={{
               display: 'flex', alignItems: 'center', gap: '12px',
-              padding: '8px 12px', background: '#111', border: '1px solid #1f1f1f',
-              borderRadius: '6px', fontSize: '12px',
+              padding: '9px 12px', background: '#111118', border: '1px solid rgba(124,58,237,0.22)',
+              borderRadius: '10px', fontSize: '12px',
             }}>
               <Badge type={k.status} />
-              <span style={{ fontFamily: 'JetBrains Mono, monospace', color: '#888', fontSize: '11px' }}>{k.kid}</span>
-              <span style={{ color: '#333', fontSize: '11px', marginLeft: 'auto' }}>
+              <span style={{ fontFamily: 'JetBrains Mono, monospace', color: '#c4b5fd', fontSize: '11px' }}>{k.kid}</span>
+              <span style={{ color: '#62627a', fontSize: '11px', marginLeft: 'auto', fontFamily: 'JetBrains Mono, monospace' }}>
                 {k.public_key?.slice(0, 40)}…
               </span>
             </div>
           ))}
         </div>
       ) : (
-        <div style={{ fontSize: '12px', color: '#444' }}>No keys registered. Add one via the API.</div>
+        <div style={{ fontSize: '12px', color: '#73738c' }}>No keys registered. Add one via the API.</div>
       )}
     </div>
   );
@@ -175,12 +175,12 @@ export default function Agents() {
     {
       key: 'agent_id', label: 'Agent ID',
       render: (r) => (
-        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px', color: '#e5e5e5' }}>
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px', color: '#c4b5fd' }}>
           {r.agent_id}
         </span>
       ),
     },
-    { key: 'display_name', label: 'Name', render: (r) => <span style={{ color: '#bbb' }}>{r.display_name || '—'}</span> },
+    { key: 'display_name', label: 'Name', render: (r) => <span style={{ color: '#d7d7e6' }}>{r.display_name || '-'}</span> },
     {
       key: 'status', label: 'Status',
       render: (r) => <Badge type={r.status} />,
@@ -188,17 +188,17 @@ export default function Agents() {
     },
     {
       key: 'stats.total_calls', label: 'Calls',
-      render: (r) => <span style={{ color: '#666' }}>{r.stats?.total_calls ?? 0}</span>,
+      render: (r) => <span style={{ color: '#06b6d4', fontFamily: 'JetBrains Mono, monospace' }}>{r.stats?.total_calls ?? 0}</span>,
       width: '80px',
     },
     {
       key: 'stats.last_seen', label: 'Last Seen',
-      render: (r) => <span style={{ color: '#555', fontSize: '12px' }}>{fmtRelative(r.stats?.last_seen)}</span>,
+      render: (r) => <span style={{ color: '#73738c', fontSize: '12px', fontFamily: 'JetBrains Mono, monospace' }}>{fmtRelative(r.stats?.last_seen)}</span>,
       width: '110px',
     },
     {
       key: 'created_at', label: 'Registered',
-      render: (r) => <span style={{ color: '#555', fontSize: '12px' }}>{fmtDate(r.created_at)}</span>,
+      render: (r) => <span style={{ color: '#73738c', fontSize: '12px', fontFamily: 'JetBrains Mono, monospace' }}>{fmtDate(r.created_at)}</span>,
       width: '130px',
     },
     {
@@ -213,7 +213,7 @@ export default function Agents() {
               <ShieldOff size={12} /> Revoke
             </Button>
           )}
-          <span style={{ color: '#333' }}>
+          <span style={{ color: '#7c3aed' }}>
             {expanded === r.agent_id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </span>
         </div>

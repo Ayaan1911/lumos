@@ -7,7 +7,7 @@ import { Badge } from '../components/Badge';
 import { PageHeader, Table, Spinner } from '../components/Layout';
 
 function fmtTime(ts) {
-  if (!ts) return '—';
+  if (!ts) return '-';
   const d = new Date(ts);
   return d.toLocaleString('en-US', {
     month: 'short', day: 'numeric',
@@ -16,17 +16,12 @@ function fmtTime(ts) {
   });
 }
 
-function fmtPct(val) {
-  if (val == null || isNaN(val)) return '—';
-  return `${(val * 100).toFixed(1)}%`;
-}
-
 const EVENT_COLS = [
-  { key: 'timestamp',  label: 'Time',     render: (r) => <span style={{ color: '#666', fontSize: '12px', fontFamily: 'JetBrains Mono, monospace' }}>{fmtTime(r.timestamp)}</span> },
-  { key: 'agent_id',   label: 'Agent',    render: (r) => <span style={{ color: '#aaa', fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>{r.agent_id || '—'}</span> },
-  { key: 'tool_name',  label: 'Tool',     render: (r) => <span style={{ color: '#ccc' }}>{r.tool_name || <span style={{ color: '#333' }}>—</span>}</span> },
-  { key: 'decision',   label: 'Decision', render: (r) => <Badge type={r.decision} />, width: '90px' },
-  { key: 'reason',     label: 'Reason',   render: (r) => <span style={{ color: '#555', fontSize: '12px' }}>{r.reason || '—'}</span>, wrap: true },
+  { key: 'timestamp', label: 'Time', render: (r) => <span style={{ color: '#73738c', fontSize: '12px', fontFamily: 'JetBrains Mono, monospace' }}>{fmtTime(r.timestamp)}</span> },
+  { key: 'agent_id', label: 'Agent', render: (r) => <span style={{ color: '#c4b5fd', fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}>{r.agent_id || '-'}</span> },
+  { key: 'tool_name', label: 'Tool', render: (r) => <span style={{ color: '#e5e7ff' }}>{r.tool_name || <span style={{ color: '#3a3a52' }}>-</span>}</span> },
+  { key: 'decision', label: 'Decision', render: (r) => <Badge type={r.decision} />, width: '90px' },
+  { key: 'reason', label: 'Reason', render: (r) => <span style={{ color: '#73738c', fontSize: '12px' }}>{r.reason || '-'}</span>, wrap: true },
 ];
 
 export default function Overview() {
@@ -70,77 +65,77 @@ export default function Overview() {
         title="Overview"
         description="Real-time stats and recent activity across all MCP agents"
         action={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#444', fontSize: '12px' }}>
-            <RefreshCw size={12} />
-            {lastRefresh ? `Refreshed ${lastRefresh.toLocaleTimeString()}` : 'Loading…'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#73738c', fontSize: '12px', fontFamily: 'JetBrains Mono, monospace' }}>
+            <RefreshCw size={12} color="#06b6d4" />
+            {lastRefresh ? `Refreshed ${lastRefresh.toLocaleTimeString()}` : 'Loading...'}
           </div>
         }
       />
 
-      {/* ── Stat Cards ── */}
       {loading && !summary ? (
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '60px' }}>
           <Spinner size={28} />
         </div>
       ) : (
         <>
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '28px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '14px', marginBottom: '28px' }}>
             <StatCard
               icon={<Users size={16} />}
               label="Total Agents"
-              value={summary?.total_agents ?? '—'}
+              value={summary?.total_agents ?? '-'}
               sub={`${summary?.active_agents ?? 0} active`}
               accentColor="#7c3aed"
             />
             <StatCard
               icon={<Activity size={16} />}
               label="Total Events"
-              value={summary?.total_events?.toLocaleString() ?? '—'}
+              value={summary?.total_events?.toLocaleString() ?? '-'}
               sub="all time"
-              accentColor="#888"
+              accentColor="#06b6d4"
             />
             <StatCard
               icon={<ShieldCheck size={16} />}
               label="Allow Rate"
-              value={allowRate != null ? `${allowRate}%` : '—'}
+              value={allowRate != null ? `${allowRate}%` : '-'}
               sub={`${summary?.allowed_events ?? 0} allowed`}
               accentColor="#22c55e"
             />
             <StatCard
               icon={<ShieldX size={16} />}
               label="Block Rate"
-              value={denyRate != null ? `${denyRate}%` : '—'}
+              value={denyRate != null ? `${denyRate}%` : '-'}
               sub={`${summary?.denied_events ?? 0} denied`}
               accentColor="#ef4444"
             />
           </div>
 
-          {/* ── Audit Chain Status ── */}
           {summary?.audit_chain_verified != null && (
             <div style={{
               marginBottom: '24px',
-              padding: '10px 14px',
-              borderRadius: '6px',
+              padding: '12px 15px',
+              borderRadius: '12px',
               background: summary.audit_chain_verified ? '#22c55e10' : '#ef444410',
-              border: `1px solid ${summary.audit_chain_verified ? '#22c55e30' : '#ef444430'}`,
+              border: `1px solid ${summary.audit_chain_verified ? '#22c55e40' : '#ef444450'}`,
+              boxShadow: `0 0 20px ${summary.audit_chain_verified ? 'rgba(34,197,94,0.10)' : 'rgba(239,68,68,0.12)'}`,
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
               fontSize: '12px',
-              color: summary.audit_chain_verified ? '#22c55e' : '#ef4444',
+              color: summary.audit_chain_verified ? '#4ade80' : '#fb7185',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
             }}>
               {summary.audit_chain_verified
                 ? <><ShieldCheck size={13} /> Merkle audit chain verified</>
-                : <><ShieldX size={13} /> Audit chain integrity check FAILED — investigate immediately</>
+                : <><ShieldX size={13} /> Audit chain integrity check failed - investigate immediately</>
               }
             </div>
           )}
 
-          {/* ── Recent Events ── */}
           <div>
             <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '13px', fontWeight: '500', color: '#888' }}>Recent Events</span>
-              <span style={{ fontSize: '11px', color: '#444' }}>Auto-refreshes every 10s</span>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: '#e5e7ff', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Recent Events</span>
+              <span style={{ fontSize: '11px', color: '#73738c', fontFamily: 'JetBrains Mono, monospace' }}>Auto-refreshes every 10s</span>
             </div>
             <Table
               columns={EVENT_COLS}

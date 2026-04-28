@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ShieldCheck, ShieldX, Filter, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShieldCheck, Filter, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getEvents, verifyAuditChain } from '../api/audit';
 import { Badge } from '../components/Badge';
 import { toast } from '../components/Toast';
-import { PageHeader, Table, Button, Spinner } from '../components/Layout';
+import { PageHeader, Table, Button } from '../components/Layout';
 
 function fmtTime(ts) {
-  if (!ts) return '—';
+  if (!ts) return '-';
   return new Date(ts).toLocaleString('en-US', {
     month: 'short', day: 'numeric',
     hour: '2-digit', minute: '2-digit', second: '2-digit',
@@ -24,7 +24,6 @@ export default function AuditLog() {
   const [verifying, setVerifying] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
 
-  // Filters
   const [agentFilter, setAgentFilter] = useState('');
   const [decisionFilter, setDecisionFilter] = useState('');
   const [toolFilter, setToolFilter] = useState('');
@@ -82,9 +81,9 @@ export default function AuditLog() {
     try {
       const res = await verifyAuditChain({ limit: 5000 });
       if (res.valid) {
-        toast.success(`Merkle chain verified — ${res.events_checked} events checked ✓`);
+        toast.success(`Merkle chain verified - ${res.events_checked} events checked`);
       } else {
-        toast.error(`Chain integrity FAILED: ${res.reason}`);
+        toast.error(`Chain integrity failed: ${res.reason}`);
       }
     } catch (err) {
       toast.error(`Verification failed: ${err.message}`);
@@ -98,26 +97,26 @@ export default function AuditLog() {
   const COLS = [
     {
       key: 'timestamp', label: 'Time',
-      render: (r) => <span style={{ color: '#666', fontSize: '11.5px', fontFamily: 'JetBrains Mono, monospace' }}>{fmtTime(r.timestamp)}</span>,
+      render: (r) => <span style={{ color: '#73738c', fontSize: '11.5px', fontFamily: 'JetBrains Mono, monospace' }}>{fmtTime(r.timestamp)}</span>,
       width: '190px',
     },
     {
       key: 'agent_id', label: 'Agent',
       render: (r) => (
-        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11.5px', color: '#999' }}>
-          {r.agent_id || <span style={{ color: '#333' }}>—</span>}
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11.5px', color: '#c4b5fd' }}>
+          {r.agent_id || <span style={{ color: '#3a3a52' }}>-</span>}
         </span>
       ),
       width: '160px',
     },
     {
       key: 'event_type', label: 'Type',
-      render: (r) => <span style={{ color: '#666', fontSize: '12px' }}>{r.event_type}</span>,
+      render: (r) => <span style={{ color: '#06b6d4', fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em' }}>{r.event_type}</span>,
       width: '140px',
     },
     {
       key: 'tool_name', label: 'Tool',
-      render: (r) => <span style={{ color: '#ccc', fontSize: '12px' }}>{r.tool_name || <span style={{ color: '#333' }}>—</span>}</span>,
+      render: (r) => <span style={{ color: '#e5e7ff', fontSize: '12px' }}>{r.tool_name || <span style={{ color: '#3a3a52' }}>-</span>}</span>,
     },
     {
       key: 'decision', label: 'Decision',
@@ -126,7 +125,7 @@ export default function AuditLog() {
     },
     {
       key: 'reason', label: 'Reason',
-      render: (r) => <span style={{ color: '#555', fontSize: '12px' }}>{r.reason || '—'}</span>,
+      render: (r) => <span style={{ color: '#73738c', fontSize: '12px' }}>{r.reason || '-'}</span>,
       wrap: true,
     },
     {
@@ -135,12 +134,12 @@ export default function AuditLog() {
         <span style={{
           fontFamily: 'JetBrains Mono, monospace',
           fontSize: '10px',
-          color: '#444',
+          color: '#62627a',
           letterSpacing: '0.02em',
         }} title={r.event_hash}>
-          {r.event_hash.slice(0, 12)}…
+          {r.event_hash.slice(0, 12)}...
         </span>
-      ) : <span style={{ color: '#2a2a2a' }}>—</span>,
+      ) : <span style={{ color: '#3a3a52' }}>-</span>,
       width: '100px',
     },
   ];
@@ -162,17 +161,19 @@ export default function AuditLog() {
         }
       />
 
-      {/* ── Filter Bar ── */}
       <div style={{
         display: 'flex', gap: '8px', marginBottom: '16px',
-        padding: '12px 14px',
-        background: '#111', border: '1px solid #1f1f1f', borderRadius: '8px',
+        padding: '13px 14px',
+        background: 'linear-gradient(180deg, rgba(17,17,24,0.94), rgba(10,10,15,0.94))',
+        border: '1px solid rgba(124,58,237,0.22)',
+        borderRadius: '14px',
+        boxShadow: '0 18px 44px rgba(0,0,0,0.24)',
         alignItems: 'center', flexWrap: 'wrap',
       }}>
-        <Filter size={13} color="#555" />
+        <Filter size={13} color="#06b6d4" />
         <input
           ref={agentRef}
-          placeholder="Filter by agent ID…"
+          placeholder="Filter by agent ID..."
           style={filterInputStyle}
           onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
           defaultValue={agentFilter}
@@ -187,7 +188,7 @@ export default function AuditLog() {
         </select>
         <input
           ref={toolRef}
-          placeholder="Filter by tool…"
+          placeholder="Filter by tool..."
           style={filterInputStyle}
           onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
           defaultValue={toolFilter}
@@ -196,13 +197,12 @@ export default function AuditLog() {
         {(agentFilter || decisionFilter || toolFilter) && (
           <Button size="sm" variant="ghost" onClick={clearFilters}>Clear</Button>
         )}
-        <span style={{ marginLeft: 'auto', fontSize: '12px', color: '#444' }}>
+        <span style={{ marginLeft: 'auto', fontSize: '12px', color: '#73738c', fontFamily: 'JetBrains Mono, monospace' }}>
           {!loading && `${total.toLocaleString()} total`}
-          {lastRefresh && ` · refreshed ${lastRefresh.toLocaleTimeString()}`}
+          {lastRefresh && ` / refreshed ${lastRefresh.toLocaleTimeString()}`}
         </span>
       </div>
 
-      {/* ── Table ── */}
       <Table
         columns={COLS}
         data={events}
@@ -210,10 +210,9 @@ export default function AuditLog() {
         empty="No audit events found matching your filters"
       />
 
-      {/* ── Pagination ── */}
       {totalPages > 1 && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '16px', justifyContent: 'flex-end' }}>
-          <span style={{ fontSize: '12px', color: '#555' }}>
+          <span style={{ fontSize: '12px', color: '#73738c', fontFamily: 'JetBrains Mono, monospace' }}>
             Page {page + 1} of {totalPages}
           </span>
           <Button
@@ -237,11 +236,11 @@ export default function AuditLog() {
 }
 
 const filterInputStyle = {
-  background: '#0a0a0a',
-  border: '1px solid #222',
-  borderRadius: '5px',
-  padding: '5px 10px',
-  color: '#ccc',
+  background: '#090911',
+  border: '1px solid rgba(124,58,237,0.30)',
+  borderRadius: '8px',
+  padding: '7px 10px',
+  color: '#e5e7ff',
   fontSize: '12px',
   fontFamily: 'inherit',
   outline: 'none',
@@ -249,11 +248,11 @@ const filterInputStyle = {
 };
 
 const filterSelectStyle = {
-  background: '#0a0a0a',
-  border: '1px solid #222',
-  borderRadius: '5px',
-  padding: '5px 10px',
-  color: '#ccc',
+  background: '#090911',
+  border: '1px solid rgba(124,58,237,0.30)',
+  borderRadius: '8px',
+  padding: '7px 10px',
+  color: '#e5e7ff',
   fontSize: '12px',
   fontFamily: 'inherit',
   outline: 'none',

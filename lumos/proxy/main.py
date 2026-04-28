@@ -57,6 +57,11 @@ app = FastAPI(title="Lumos Proxy", lifespan=lifespan)
 app_proxy = app
 
 
+@app.get("/health")
+async def health() -> dict[str, str]:
+    return {"status": "ok"}
+
+
 @app.post("/proxy")
 async def proxy_endpoint(request: Request):
     return await handle_proxy_request(request)

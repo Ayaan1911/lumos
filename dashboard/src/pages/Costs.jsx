@@ -13,10 +13,11 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: '#1a1a1a', border: '1px solid #2a2a2a',
-      borderRadius: '6px', padding: '8px 12px', fontSize: '12px',
+      background: '#111118', border: '1px solid rgba(124,58,237,0.35)',
+      borderRadius: '10px', padding: '9px 12px', fontSize: '12px',
+      boxShadow: '0 0 20px rgba(124,58,237,0.18)',
     }}>
-      <div style={{ color: '#888', marginBottom: '4px' }}>{label}</div>
+      <div style={{ color: '#9ca3c7', marginBottom: '4px', fontFamily: 'JetBrains Mono, monospace' }}>{label}</div>
       {payload.map((p) => (
         <div key={p.name} style={{ color: p.fill || '#7c3aed', fontWeight: '500' }}>
           {p.name}: <span style={{ color: '#fff' }}>{p.value.toLocaleString()}</span>
@@ -36,17 +37,17 @@ function ProgressBar({ value, max, color }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
       <div style={{
-        flex: 1, height: '5px', background: '#1a1a1a',
+        flex: 1, height: '6px', background: '#171724',
         borderRadius: '3px', overflow: 'hidden',
       }}>
         <div style={{
           height: '100%', width: `${pct}%`,
-          background: c, borderRadius: '3px',
+          background: c, borderRadius: '3px', boxShadow: `0 0 12px ${c}88`,
           transition: 'width 0.4s ease',
         }} />
       </div>
       <span style={{
-        fontSize: '11px', color: danger ? '#ef4444' : warning ? '#f59e0b' : '#666',
+        fontSize: '11px', color: danger ? '#fb7185' : warning ? '#fbbf24' : '#73738c',
         width: '36px', textAlign: 'right', flexShrink: 0,
       }}>
         {pct.toFixed(0)}%
@@ -56,7 +57,7 @@ function ProgressBar({ value, max, color }) {
 }
 
 // ── Colors ────────────────────────────────────────────────────────────────────
-const PALETTE = ['#7c3aed', '#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#4f46e5', '#4338ca'];
+const PALETTE = ['#7c3aed', '#06b6d4', '#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#38bdf8'];
 
 // ── Costs Page ─────────────────────────────────────────────────────────────────
 export default function Costs() {
@@ -118,7 +119,7 @@ export default function Costs() {
       ) : (
         <>
           {/* ── Summary Cards ── */}
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '28px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '14px', marginBottom: '28px' }}>
             <StatCard
               icon={<DollarSign size={16} />}
               label="Total Usage (all periods)"
@@ -131,7 +132,7 @@ export default function Costs() {
               label="Active Budget Entries"
               value={agents.length}
               sub={`${new Set(agents.map(a => a.agent_id)).size} agents`}
-              accentColor="#888"
+              accentColor="#06b6d4"
             />
             <StatCard
               icon={<Award size={16} />}
@@ -140,16 +141,17 @@ export default function Costs() {
                 ? topAgent.agent_id.slice(0, 14) + '…'
                 : topAgent?.agent_id || '—'}
               sub={topAgent ? `${topAgent.usage?.toLocaleString()} units · ${topAgent.period}` : 'none'}
-              accentColor="#f59e0b"
+              accentColor="#22c55e"
             />
           </div>
 
           {/* ── Bar Chart ── */}
           <div style={{
-            background: '#111', border: '1px solid #1f1f1f', borderRadius: '8px',
-            padding: '20px 24px', marginBottom: '24px',
+            background: 'linear-gradient(180deg, rgba(17,17,24,0.96), rgba(10,10,15,0.96))', border: '1px solid rgba(124,58,237,0.22)', borderRadius: '14px',
+            padding: '22px 24px', marginBottom: '24px',
+            boxShadow: '0 18px 44px rgba(0,0,0,0.28)',
           }}>
-            <div style={{ marginBottom: '16px', fontSize: '13px', fontWeight: '500', color: '#888' }}>
+            <div style={{ marginBottom: '16px', fontSize: '12px', fontWeight: '800', color: '#e5e7ff', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               Usage by Agent
             </div>
             {chartData.length > 0 ? (
@@ -157,14 +159,14 @@ export default function Costs() {
                 <BarChart data={chartData} margin={{ top: 4, right: 0, left: -12, bottom: 0 }}>
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: '#555', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
+                    tick={{ fill: '#73738c', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
                     axisLine={false} tickLine={false}
                   />
                   <YAxis
-                    tick={{ fill: '#444', fontSize: 11 }}
+                    tick={{ fill: '#62627a', fontSize: 11 }}
                     axisLine={false} tickLine={false}
                   />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: '#ffffff08' }} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: '#7c3aed12' }} />
                   <Bar dataKey="usage" radius={[3, 3, 0, 0]} maxBarSize={48}>
                     {chartData.map((entry, i) => (
                       <Cell key={i} fill={entry.color} />
@@ -173,25 +175,25 @@ export default function Costs() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333', fontSize: '13px' }}>
+            <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#62627a', fontSize: '13px' }}>
                 No chart data
               </div>
             )}
           </div>
 
           {/* ── Detailed Table ── */}
-          <div style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: '8px', overflow: 'hidden' }}>
-            <div style={{ padding: '14px 20px', borderBottom: '1px solid #1a1a1a', fontSize: '13px', fontWeight: '500', color: '#888' }}>
+          <div style={{ background: '#111118', border: '1px solid rgba(124,58,237,0.22)', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 18px 44px rgba(0,0,0,0.28)' }}>
+            <div style={{ padding: '15px 20px', borderBottom: '1px solid rgba(124,58,237,0.18)', fontSize: '12px', fontWeight: '800', color: '#e5e7ff', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               Budget Details
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{ background: '#0d0d0d', borderBottom: '1px solid #1a1a1a' }}>
+                <tr style={{ background: '#07070c', borderBottom: '1px solid rgba(124,58,237,0.18)' }}>
                   {['Agent', 'Period', 'Usage', 'Limit', 'Budget Used'].map((h) => (
                     <th key={h} style={{
                       padding: '9px 16px', textAlign: 'left',
-                      fontSize: '11px', fontWeight: '600', color: '#555',
-                      letterSpacing: '0.05em', textTransform: 'uppercase',
+                      fontSize: '10px', fontWeight: '800', color: '#8b8ba4',
+                      letterSpacing: '0.12em', textTransform: 'uppercase',
                     }}>{h}</th>
                   ))}
                 </tr>
@@ -200,33 +202,33 @@ export default function Costs() {
                 {agents.map((a, i) => (
                   <tr
                     key={`${a.agent_id}-${a.period}`}
-                    style={{ borderBottom: '1px solid #161616' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = '#141414'; }}
+                    style={{ borderBottom: '1px solid rgba(35,35,58,0.58)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(124,58,237,0.10)'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                   >
-                    <td style={{ padding: '12px 16px', fontFamily: 'JetBrains Mono, monospace', fontSize: '12px', color: '#ccc' }}>
+                    <td style={{ padding: '12px 16px', fontFamily: 'JetBrains Mono, monospace', fontSize: '12px', color: '#c4b5fd' }}>
                       {a.agent_id}
                     </td>
                     <td style={{ padding: '12px 16px' }}>
                       <span style={{
-                        fontSize: '11px', fontWeight: '500', color: '#888',
-                        background: '#1a1a1a', border: '1px solid #222',
-                        padding: '2px 7px', borderRadius: '4px',
+                        fontSize: '11px', fontWeight: '800', color: '#06b6d4',
+                        background: '#06b6d418', border: '1px solid #06b6d440',
+                        padding: '3px 8px', borderRadius: '999px',
                       }}>
                         {a.period}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 16px', fontSize: '13px', color: '#e5e5e5', fontWeight: '500' }}>
+                    <td style={{ padding: '12px 16px', fontSize: '13px', color: '#e5e7ff', fontWeight: '700' }}>
                       {(a.usage || 0).toLocaleString()}
                     </td>
-                    <td style={{ padding: '12px 16px', fontSize: '13px', color: a.limit ? '#888' : '#333' }}>
+                    <td style={{ padding: '12px 16px', fontSize: '13px', color: a.limit ? '#9ca3c7' : '#3a3a52' }}>
                       {a.limit ? a.limit.toLocaleString() : '∞'}
                     </td>
                     <td style={{ padding: '12px 16px', width: '200px' }}>
                       {a.limit ? (
                         <ProgressBar value={a.usage || 0} max={a.limit} color={PALETTE[i % PALETTE.length]} />
                       ) : (
-                        <span style={{ fontSize: '11px', color: '#333' }}>No limit set</span>
+                        <span style={{ fontSize: '11px', color: '#3a3a52' }}>No limit set</span>
                       )}
                     </td>
                   </tr>
@@ -239,17 +241,17 @@ export default function Costs() {
           <div style={{
             marginTop: '14px',
             padding: '10px 14px',
-            background: '#111',
-            border: '1px solid #1a1a1a',
-            borderRadius: '6px',
+            background: '#111118',
+            border: '1px solid rgba(6,182,212,0.18)',
+            borderRadius: '12px',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
             fontSize: '12px',
-            color: '#444',
+            color: '#73738c',
           }}>
-            <AlertCircle size={13} />
-            Budget limits are configured in your policy YAML under the <code style={{ fontFamily: 'JetBrains Mono, monospace', color: '#555' }}>budgets:</code> key. Periods reset daily or monthly.
+            <AlertCircle size={13} color="#06b6d4" />
+            Budget limits are configured in your policy YAML under the <code style={{ fontFamily: 'JetBrains Mono, monospace', color: '#06b6d4' }}>budgets:</code> key. Periods reset daily or monthly.
           </div>
         </>
       )}

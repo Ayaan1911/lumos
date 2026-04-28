@@ -146,6 +146,7 @@ class PolicyResponse(BaseModel):
     policy: dict
     policy_dir: str
     fingerprint: dict
+    yaml_content: str
 
 
 class PolicyUpdateRequest(BaseModel):

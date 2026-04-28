@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -12,19 +12,35 @@ import {
 import axios from 'axios';
 
 const NAV = [
-  { to: '/',        icon: <LayoutDashboard size={16} />, label: 'Overview'     },
-  { to: '/agents',  icon: <Users size={16} />,           label: 'Agents'       },
-  { to: '/audit',   icon: <ScrollText size={16} />,      label: 'Audit Log'    },
-  { to: '/policy',  icon: <FileCode2 size={16} />,       label: 'Policy'       },
-  { to: '/costs',   icon: <DollarSign size={16} />,      label: 'Costs'        },
+  { to: '/',        icon: <LayoutDashboard size={16} />, label: 'Overview'  },
+  { to: '/agents',  icon: <Users size={16} />,           label: 'Agents'    },
+  { to: '/audit',   icon: <ScrollText size={16} />,      label: 'Audit Log' },
+  { to: '/policy',  icon: <FileCode2 size={16} />,       label: 'Policy'    },
+  { to: '/costs',   icon: <DollarSign size={16} />,      label: 'Costs'     },
 ];
+
+const theme = {
+  bg: '#0a0a0f',
+  sidebar: '#07070c',
+  surface: '#111118',
+  surface2: '#171724',
+  border: '#23233a',
+  borderHot: '#7c3aed66',
+  text: '#ffffff',
+  muted: '#a1a1b5',
+  dim: '#62627a',
+  purple: '#7c3aed',
+  cyan: '#06b6d4',
+  green: '#22c55e',
+  red: '#ef4444',
+};
 
 function useApiHealth() {
   const [ok, setOk] = useState(null);
   useEffect(() => {
     const check = async () => {
       try {
-        await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:4001'}/health`, { timeout: 3000 });
+        await axios.get(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:4001'}/health`, { timeout: 3000 });
         setOk(true);
       } catch {
         setOk(false);
@@ -41,46 +57,69 @@ export default function Layout() {
   const apiOk = useApiHealth();
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#0a0a0a' }}>
-      {/* ── Sidebar ─────────────────────────────────────────────────────────── */}
+    <div style={{
+      display: 'flex',
+      height: '100vh',
+      overflow: 'hidden',
+      background: 'transparent',
+      position: 'relative',
+      zIndex: 1,
+    }}>
       <aside style={{
-        width: '220px',
+        width: '244px',
         flexShrink: 0,
-        background: '#0d0d0d',
-        borderRight: '1px solid #1a1a1a',
+        background: 'linear-gradient(180deg, rgba(7,7,12,0.98), rgba(10,10,18,0.98))',
+        borderRight: '1px solid rgba(124, 58, 237, 0.24)',
+        boxShadow: '18px 0 60px rgba(0,0,0,0.38), inset -1px 0 0 rgba(6,182,212,0.08)',
         display: 'flex',
         flexDirection: 'column',
-        padding: '0',
+        padding: 0,
       }}>
-        {/* Wordmark */}
         <div style={{
-          padding: '20px 20px 16px',
-          borderBottom: '1px solid #161616',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
+          padding: '24px 22px 20px',
+          borderBottom: '1px solid rgba(124, 58, 237, 0.18)',
         }}>
-          <span style={{ fontSize: '22px', lineHeight: 1 }}>🔦</span>
-          <span style={{ fontSize: '17px', fontWeight: '700', color: '#ffffff', letterSpacing: '-0.02em' }}>
-            Lumos
-          </span>
-          <span style={{
-            marginLeft: 'auto',
-            fontSize: '9px',
-            fontWeight: '600',
-            color: '#555',
-            background: '#161616',
-            border: '1px solid #222',
-            padding: '2px 5px',
-            borderRadius: '3px',
-            letterSpacing: '0.05em',
-          }}>
-            v0.1
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{
+              width: '34px',
+              height: '34px',
+              borderRadius: '10px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
+              boxShadow: '0 0 24px rgba(124, 58, 237, 0.42)',
+              color: '#fff',
+              fontWeight: 900,
+              letterSpacing: '-0.06em',
+            }}>
+              L
+            </span>
+            <div>
+              <div style={{ fontSize: '18px', fontWeight: '800', color: theme.text, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                Lumos
+              </div>
+              <div style={{ marginTop: '1px', fontSize: '10px', color: theme.cyan, letterSpacing: '0.18em', textTransform: 'uppercase' }}>
+                SOC Control
+              </div>
+            </div>
+            <span style={{
+              marginLeft: 'auto',
+              fontSize: '9px',
+              fontWeight: '700',
+              color: '#c4b5fd',
+              background: '#7c3aed1f',
+              border: '1px solid #7c3aed55',
+              padding: '3px 6px',
+              borderRadius: '999px',
+              letterSpacing: '0.08em',
+            }}>
+              v0.1
+            </span>
+          </div>
         </div>
 
-        {/* Nav */}
-        <nav style={{ flex: 1, padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {NAV.map(({ to, icon, label }) => (
             <NavLink
               key={to}
@@ -89,89 +128,101 @@ export default function Layout() {
               style={({ isActive }) => ({
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px',
-                padding: '8px 10px',
-                borderRadius: '6px',
+                gap: '11px',
+                padding: '11px 12px',
+                borderRadius: '10px',
+                borderLeft: `3px solid ${isActive ? theme.purple : 'transparent'}`,
                 textDecoration: 'none',
-                fontSize: '13.5px',
-                fontWeight: isActive ? '500' : '400',
-                color: isActive ? '#ffffff' : '#666666',
-                background: isActive ? '#1a1a1a' : 'transparent',
-                transition: 'all 0.12s ease',
+                fontSize: '12px',
+                fontWeight: '700',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: isActive ? theme.text : '#77778f',
+                background: isActive ? 'linear-gradient(90deg, rgba(124,58,237,0.24), rgba(6,182,212,0.06))' : 'transparent',
+                boxShadow: isActive ? '0 0 20px rgba(124, 58, 237, 0.22)' : 'none',
+                transition: 'all 0.16s ease',
               })}
               onMouseEnter={(e) => {
-                if (!e.currentTarget.classList.contains('active')) {
-                  e.currentTarget.style.background = '#141414';
-                  e.currentTarget.style.color = '#aaaaaa';
+                if (e.currentTarget.getAttribute('aria-current') !== 'page') {
+                  e.currentTarget.style.background = 'rgba(124,58,237,0.08)';
+                  e.currentTarget.style.color = '#c7c7da';
                 }
               }}
               onMouseLeave={(e) => {
-                const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
-                if (!isActive) {
+                if (e.currentTarget.getAttribute('aria-current') !== 'page') {
                   e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#666666';
+                  e.currentTarget.style.color = '#77778f';
                 }
               }}
             >
-              <span style={{ opacity: 0.85, flexShrink: 0 }}>{icon}</span>
+              <span style={{ color: 'currentColor', flexShrink: 0, filter: 'drop-shadow(0 0 7px rgba(124,58,237,0.35))' }}>{icon}</span>
               {label}
             </NavLink>
           ))}
         </nav>
 
-        {/* Footer */}
         <div style={{
-          padding: '14px 16px',
-          borderTop: '1px solid #161616',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '6px',
+          margin: '0 14px 14px',
+          padding: '14px 14px',
+          border: '1px solid rgba(6, 182, 212, 0.18)',
+          borderRadius: '12px',
+          background: 'linear-gradient(180deg, rgba(17,17,24,0.84), rgba(8,8,14,0.84))',
         }}>
-          <div style={{ fontSize: '11px', color: '#444', fontWeight: '500', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+          <div style={{ fontSize: '10px', color: '#06b6d4', fontWeight: '800', letterSpacing: '0.16em', textTransform: 'uppercase' }}>
             MCP Firewall
           </div>
-          <div style={{ fontSize: '11px', color: '#333' }}>
-            Proxy :4000 · API :4001
+          <div style={{ marginTop: '7px', fontSize: '11px', color: '#73738c', fontFamily: 'JetBrains Mono, monospace' }}>
+            Proxy :4000 / API :4001
           </div>
         </div>
       </aside>
 
-      {/* ── Main ────────────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Topbar */}
         <header style={{
-          height: '52px',
+          height: '58px',
           flexShrink: 0,
-          borderBottom: '1px solid #1a1a1a',
+          borderBottom: '1px solid rgba(124, 58, 237, 0.18)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-end',
-          padding: '0 24px',
+          padding: '0 30px',
           gap: '16px',
-          background: '#0d0d0d',
+          background: 'rgba(10,10,15,0.72)',
+          backdropFilter: 'blur(18px)',
         }}>
-          {/* Connection status */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '9px',
+            padding: '7px 11px',
+            borderRadius: '999px',
+            background: apiOk ? '#22c55e12' : apiOk === false ? '#ef444412' : '#171724',
+            border: `1px solid ${apiOk ? '#22c55e40' : apiOk === false ? '#ef444440' : '#23233a'}`,
+          }}>
             {apiOk === null ? (
-              <span style={{ color: '#444', fontSize: '12px' }}>Checking…</span>
+              <span style={{ color: theme.dim, fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Checking</span>
             ) : apiOk ? (
               <>
-                <Wifi size={13} color="#22c55e" />
-                <span style={{ fontSize: '12px', color: '#22c55e', fontWeight: '500' }}>API connected</span>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e88' }} />
+                <Wifi size={13} color={theme.green} />
+                <span style={{ fontSize: '11px', color: '#4ade80', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase' }}>API connected</span>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: theme.green, boxShadow: '0 0 10px #22c55e' }} />
               </>
             ) : (
               <>
-                <WifiOff size={13} color="#ef4444" />
-                <span style={{ fontSize: '12px', color: '#ef4444', fontWeight: '500' }}>API offline</span>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444' }} />
+                <WifiOff size={13} color={theme.red} />
+                <span style={{ fontSize: '11px', color: '#fb7185', fontWeight: '800', letterSpacing: '0.1em', textTransform: 'uppercase' }}>API offline</span>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: theme.red, boxShadow: '0 0 10px #ef4444' }} />
               </>
             )}
           </div>
         </header>
 
-        {/* Page content */}
-        <main style={{ flex: 1, overflow: 'auto', padding: '28px 32px' }}>
+        <main style={{
+          flex: 1,
+          overflow: 'auto',
+          padding: '30px 34px',
+          background: 'linear-gradient(135deg, rgba(10,10,15,0.52), rgba(12,9,20,0.72))',
+        }}>
           <Outlet />
         </main>
       </div>
@@ -179,17 +230,18 @@ export default function Layout() {
   );
 }
 
-// ─── Shared UI Primitives ───────────────────────────────────────────────────────
-
 export function PageHeader({ title, description, action }) {
   return (
-    <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' }}>
+    <div style={{ marginBottom: '26px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '18px' }}>
       <div>
-        <h1 style={{ fontSize: '19px', fontWeight: '600', color: '#ffffff', lineHeight: 1.3, letterSpacing: '-0.01em' }}>
+        <div style={{ fontSize: '10px', fontWeight: '800', color: theme.cyan, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '7px' }}>
+          Lumos Security Console
+        </div>
+        <h1 style={{ fontSize: '24px', fontWeight: '800', color: theme.text, lineHeight: 1.15, letterSpacing: '-0.03em' }}>
           {title}
         </h1>
         {description && (
-          <p style={{ marginTop: '4px', fontSize: '13px', color: '#666' }}>{description}</p>
+          <p style={{ marginTop: '7px', fontSize: '13px', color: theme.muted }}>{description}</p>
         )}
       </div>
       {action && <div style={{ flexShrink: 0 }}>{action}</div>}
@@ -202,12 +254,14 @@ export function Spinner({ size = 18 }) {
     <div style={{
       width: size,
       height: size,
-      border: `2px solid #1f1f1f`,
-      borderTopColor: '#7c3aed',
+      border: '2px solid rgba(124,58,237,0.16)',
+      borderTopColor: theme.cyan,
+      borderRightColor: theme.purple,
       borderRadius: '50%',
       animation: 'spin 0.7s linear infinite',
       display: 'inline-block',
       flexShrink: 0,
+      boxShadow: '0 0 16px rgba(6,182,212,0.22)',
     }}>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
@@ -216,14 +270,42 @@ export function Spinner({ size = 18 }) {
 
 export function Button({ children, onClick, variant = 'primary', size = 'md', disabled, loading, style: extra }) {
   const styles = {
-    primary:   { background: '#7c3aed', color: '#fff',     border: '1px solid #7c3aed',  hoverBg: '#6d28d9' },
-    secondary: { background: '#111111', color: '#cccccc',  border: '1px solid #2a2a2a',  hoverBg: '#1a1a1a' },
-    danger:    { background: '#ef444418', color: '#ef4444', border: '1px solid #ef444440', hoverBg: '#ef444428' },
-    ghost:     { background: 'transparent', color: '#888', border: '1px solid transparent', hoverBg: '#1a1a1a' },
+    primary: {
+      background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
+      color: '#fff',
+      border: '1px solid rgba(124,58,237,0.65)',
+      hoverBg: 'linear-gradient(135deg, #8b5cf6, #22d3ee)',
+      shadow: '0 0 18px rgba(124,58,237,0.24)',
+      hoverShadow: '0 0 24px rgba(124,58,237,0.45)',
+    },
+    secondary: {
+      background: '#111118',
+      color: '#c7c7da',
+      border: '1px solid rgba(124,58,237,0.28)',
+      hoverBg: '#171724',
+      shadow: 'none',
+      hoverShadow: '0 0 18px rgba(124,58,237,0.18)',
+    },
+    danger: {
+      background: '#ef444418',
+      color: '#fb7185',
+      border: '1px solid #ef444450',
+      hoverBg: '#ef444428',
+      shadow: 'none',
+      hoverShadow: '0 0 18px rgba(239,68,68,0.22)',
+    },
+    ghost: {
+      background: 'transparent',
+      color: '#9ca3c7',
+      border: '1px solid transparent',
+      hoverBg: '#171724',
+      shadow: 'none',
+      hoverShadow: 'none',
+    },
   };
   const s = styles[variant] || styles.primary;
-  const pad = size === 'sm' ? '5px 10px' : size === 'lg' ? '10px 20px' : '7px 14px';
-  const fs = size === 'sm' ? '12px' : '13px';
+  const pad = size === 'sm' ? '6px 11px' : size === 'lg' ? '11px 21px' : '8px 15px';
+  const fs = size === 'sm' ? '11px' : '12px';
 
   return (
     <button
@@ -232,23 +314,38 @@ export function Button({ children, onClick, variant = 'primary', size = 'md', di
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '6px',
+        gap: '7px',
         padding: pad,
-        borderRadius: '6px',
+        borderRadius: '9px',
         border: s.border,
         background: s.background,
         color: s.color,
         fontSize: fs,
-        fontWeight: '500',
+        fontWeight: '800',
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
         cursor: (disabled || loading) ? 'not-allowed' : 'pointer',
-        opacity: (disabled || loading) ? 0.5 : 1,
-        transition: 'all 0.12s ease',
+        opacity: (disabled || loading) ? 0.52 : 1,
+        transition: 'all 0.16s ease',
         fontFamily: 'inherit',
         whiteSpace: 'nowrap',
+        boxShadow: s.shadow,
         ...extra,
       }}
-      onMouseEnter={(e) => { if (!disabled && !loading) e.currentTarget.style.background = s.hoverBg; }}
-      onMouseLeave={(e) => { if (!disabled && !loading) e.currentTarget.style.background = s.background; }}
+      onMouseEnter={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.background = s.hoverBg;
+          e.currentTarget.style.boxShadow = s.hoverShadow;
+          e.currentTarget.style.transform = 'translateY(-1px)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.background = s.background;
+          e.currentTarget.style.boxShadow = s.shadow;
+          e.currentTarget.style.transform = 'translateY(0)';
+        }
+      }}
     >
       {loading && <Spinner size={13} />}
       {children}
@@ -258,18 +355,24 @@ export function Button({ children, onClick, variant = 'primary', size = 'md', di
 
 export function Table({ columns, data, loading, empty, onRowClick, expandedRow, renderExpanded }) {
   return (
-    <div style={{ borderRadius: '8px', border: '1px solid #1f1f1f', overflow: 'hidden' }}>
+    <div style={{
+      borderRadius: '14px',
+      border: '1px solid rgba(124,58,237,0.22)',
+      overflow: 'hidden',
+      background: 'rgba(17,17,24,0.86)',
+      boxShadow: '0 18px 44px rgba(0,0,0,0.30)',
+    }}>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
-          <tr style={{ borderBottom: '1px solid #1a1a1a', background: '#0d0d0d' }}>
+          <tr style={{ borderBottom: '1px solid rgba(124,58,237,0.18)', background: 'rgba(7,7,12,0.88)' }}>
             {columns.map((col) => (
               <th key={col.key} style={{
-                padding: '10px 16px',
+                padding: '12px 16px',
                 textAlign: 'left',
-                fontSize: '11px',
-                fontWeight: '600',
-                color: '#555',
-                letterSpacing: '0.06em',
+                fontSize: '10px',
+                fontWeight: '800',
+                color: '#8b8ba4',
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
                 width: col.width,
@@ -282,7 +385,7 @@ export function Table({ columns, data, loading, empty, onRowClick, expandedRow, 
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan={columns.length} style={{ padding: '40px', textAlign: 'center' }}>
+              <td colSpan={columns.length} style={{ padding: '44px', textAlign: 'center' }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <Spinner size={22} />
                 </div>
@@ -290,29 +393,33 @@ export function Table({ columns, data, loading, empty, onRowClick, expandedRow, 
             </tr>
           ) : data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} style={{ padding: '48px 16px', textAlign: 'center', color: '#444', fontSize: '13px' }}>
+              <td colSpan={columns.length} style={{ padding: '52px 16px', textAlign: 'center', color: theme.dim, fontSize: '13px' }}>
                 {empty || 'No data'}
               </td>
             </tr>
           ) : data.map((row, i) => (
-            <>
+            <Fragment key={row.id || row.agent_id || row.session_id || i}>
               <tr
-                key={row.id || row.agent_id || row.session_id || i}
                 onClick={() => onRowClick && onRowClick(row)}
                 style={{
-                  borderBottom: '1px solid #161616',
+                  borderBottom: '1px solid rgba(35,35,58,0.58)',
                   cursor: onRowClick ? 'pointer' : 'default',
-                  background: expandedRow === (row.id || row.agent_id) ? '#141414' : 'transparent',
-                  transition: 'background 0.1s ease',
+                  background: expandedRow === (row.id || row.agent_id) ? 'rgba(124,58,237,0.10)' : 'rgba(13,13,21,0.36)',
+                  transition: 'background 0.12s ease, box-shadow 0.12s ease',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#141414'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = expandedRow === (row.id || row.agent_id) ? '#141414' : 'transparent'; }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(124,58,237,0.10)';
+                  e.currentTarget.style.boxShadow = 'inset 3px 0 0 rgba(6,182,212,0.65)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = expandedRow === (row.id || row.agent_id) ? 'rgba(124,58,237,0.10)' : 'rgba(13,13,21,0.36)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 {columns.map((col) => (
                   <td key={col.key} style={{
-                    padding: '11px 16px',
-                    fontSize: '13px',
-                    color: col.muted ? '#666' : '#ccc',
+                    padding: '12px 16px',
+                    color: col.muted ? '#73738c' : '#d7d7e6',
                     whiteSpace: col.wrap ? 'normal' : 'nowrap',
                     overflow: 'hidden',
                     textOverflow: col.wrap ? 'unset' : 'ellipsis',
@@ -325,13 +432,13 @@ export function Table({ columns, data, loading, empty, onRowClick, expandedRow, 
                 ))}
               </tr>
               {renderExpanded && expandedRow === (row.id || row.agent_id) && (
-                <tr key={`exp-${row.id || row.agent_id}`} style={{ background: '#0e0e0e' }}>
-                  <td colSpan={columns.length} style={{ padding: '0' }}>
+                <tr style={{ background: 'rgba(8,8,14,0.94)' }}>
+                  <td colSpan={columns.length} style={{ padding: 0 }}>
                     {renderExpanded(row)}
                   </td>
                 </tr>
               )}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>
@@ -351,34 +458,41 @@ export function Modal({ open, onClose, title, children, width = '480px' }) {
   return (
     <div
       style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'rgba(0,0,0,0.7)',
-        backdropFilter: 'blur(6px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        position: 'fixed',
+        inset: 0,
+        zIndex: 1000,
+        background: 'rgba(2,2,8,0.78)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={{
-        background: '#111111',
-        border: '1px solid #2a2a2a',
-        borderRadius: '10px',
+        background: 'linear-gradient(180deg, #111118, #0a0a0f)',
+        border: '1px solid rgba(124,58,237,0.38)',
+        borderRadius: '16px',
         width,
         maxWidth: '95vw',
         maxHeight: '90vh',
         overflow: 'auto',
-        boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
+        boxShadow: '0 0 30px rgba(124,58,237,0.18), 0 28px 80px rgba(0,0,0,0.72)',
       }}>
         <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '18px 22px', borderBottom: '1px solid #1f1f1f',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '19px 22px',
+          borderBottom: '1px solid rgba(124,58,237,0.22)',
         }}>
-          <h2 style={{ fontSize: '15px', fontWeight: '600', color: '#fff' }}>{title}</h2>
+          <h2 style={{ fontSize: '14px', fontWeight: '800', color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{title}</h2>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', padding: '2px', lineHeight: 1 }}
+            style={{ background: 'none', border: 'none', color: '#8b8ba4', cursor: 'pointer', padding: '2px', lineHeight: 1 }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -390,39 +504,55 @@ export function Modal({ open, onClose, title, children, width = '480px' }) {
 
 export function Input({ label, value, onChange, placeholder, type = 'text', error }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      {label && <label style={{ fontSize: '12px', fontWeight: '500', color: '#888' }}>{label}</label>}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+      {label && <label style={{ fontSize: '11px', fontWeight: '800', color: '#9ca3c7', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{label}</label>}
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         style={{
-          background: '#0a0a0a',
-          border: `1px solid ${error ? '#ef4444' : '#2a2a2a'}`,
-          borderRadius: '6px',
-          padding: '8px 12px',
-          color: '#e5e5e5',
+          background: '#090911',
+          border: `1px solid ${error ? '#ef4444' : 'rgba(124,58,237,0.30)'}`,
+          borderRadius: '9px',
+          padding: '10px 12px',
+          color: '#f5f5ff',
           fontSize: '13px',
           fontFamily: 'inherit',
           outline: 'none',
           width: '100%',
-          transition: 'border-color 0.12s',
+          transition: 'border-color 0.14s, box-shadow 0.14s',
         }}
-        onFocus={(e) => { e.target.style.borderColor = '#7c3aed'; }}
-        onBlur={(e) => { e.target.style.borderColor = error ? '#ef4444' : '#2a2a2a'; }}
+        onFocus={(e) => {
+          e.target.style.borderColor = theme.cyan;
+          e.target.style.boxShadow = '0 0 16px rgba(6,182,212,0.16)';
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = error ? '#ef4444' : 'rgba(124,58,237,0.30)';
+          e.target.style.boxShadow = 'none';
+        }}
       />
-      {error && <span style={{ fontSize: '11px', color: '#ef4444' }}>{error}</span>}
+      {error && <span style={{ fontSize: '11px', color: '#fb7185' }}>{error}</span>}
     </div>
   );
 }
 
 export function EmptyState({ icon, title, description }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 24px', gap: '12px' }}>
-      <div style={{ color: '#2a2a2a', marginBottom: '4px' }}>{icon}</div>
-      <div style={{ fontSize: '14px', fontWeight: '500', color: '#444' }}>{title}</div>
-      {description && <div style={{ fontSize: '13px', color: '#333', textAlign: 'center', maxWidth: '300px' }}>{description}</div>}
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '70px 24px',
+      gap: '13px',
+      border: '1px solid rgba(124,58,237,0.20)',
+      borderRadius: '16px',
+      background: 'rgba(17,17,24,0.56)',
+    }}>
+      <div style={{ color: '#7c3aed', marginBottom: '4px', filter: 'drop-shadow(0 0 16px rgba(124,58,237,0.5))' }}>{icon}</div>
+      <div style={{ fontSize: '15px', fontWeight: '800', color: '#f5f5ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{title}</div>
+      {description && <div style={{ fontSize: '13px', color: '#73738c', textAlign: 'center', maxWidth: '340px' }}>{description}</div>}
     </div>
   );
 }

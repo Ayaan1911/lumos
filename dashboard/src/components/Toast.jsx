@@ -48,10 +48,10 @@ function ToastItem({ id, message, type, onRemove }) {
         alignItems: 'flex-start',
         gap: '10px',
         padding: '12px 14px',
-        background: '#111111',
-        border: '1px solid #1f1f1f',
+        background: 'linear-gradient(180deg, #111118, #0a0a0f)',
+        border: '1px solid rgba(124,58,237,0.28)',
         borderLeft: `3px solid ${COLORS[type]}`,
-        borderRadius: '8px',
+        borderRadius: '12px',
         cursor: 'pointer',
         maxWidth: '360px',
         minWidth: '280px',
@@ -59,15 +59,16 @@ function ToastItem({ id, message, type, onRemove }) {
         transform: visible ? 'translateX(0)' : 'translateX(20px)',
         transition: 'all 0.25s ease',
         userSelect: 'none',
+        boxShadow: '0 18px 44px rgba(0,0,0,0.36), 0 0 20px rgba(124,58,237,0.14)',
       }}
     >
       <span style={{ color: COLORS[type], marginTop: '1px', flexShrink: 0 }}>
         {ICONS[type]}
       </span>
-      <span style={{ color: '#e5e5e5', fontSize: '13px', lineHeight: '1.4', flex: 1 }}>
+      <span style={{ color: '#e5e7ff', fontSize: '13px', lineHeight: '1.4', flex: 1 }}>
         {message}
       </span>
-      <span style={{ color: '#555', flexShrink: 0 }}>
+      <span style={{ color: '#73738c', flexShrink: 0 }}>
         <X size={14} />
       </span>
     </div>

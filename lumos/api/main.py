@@ -8,6 +8,7 @@ import time
 from asyncpg import UniqueViolationError
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, status
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import yaml
 
@@ -81,6 +82,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="Lumos", version="0.1.0", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def _error_response(status_code: int, error: str, detail: str | None = None) -> JSONResponse:
@@ -672,10 +680,17 @@ async def get_costs_endpoint(
 async def get_policy_endpoint(
     _: None = Depends(require_admin),
 ) -> PolicyResponse:
+    policy_path = Path(get_policy_dir()) / "default.yaml"
+    if policy_path.exists():
+        yaml_content = policy_path.read_text(encoding="utf-8")
+    else:
+        yaml_content = yaml.safe_dump(get_policy(), sort_keys=False)
+
     return PolicyResponse(
         policy=get_policy(),
         policy_dir=get_policy_dir(),
         fingerprint=get_policy_fingerprint(),
+        yaml_content=yaml_content,
     )
 
 
